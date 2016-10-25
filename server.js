@@ -4,7 +4,7 @@ var express = require('express'),
     app     = express(),
     eps     = require('ejs'),
     morgan  = require('morgan'),
-    request     = require('request');
+    http    = require('http');
     
 Object.assign=require('object-assign')
 
@@ -75,14 +75,15 @@ app.get('/', function (req, res) {
   // } else {
   //   res.render('index.html', { pageCountMessage : null});
   // }
-  request.connect('http://google.com', function (error, response, body) {
-  if (!error && response.statusCode == 200) {
-    res.render('index.html', { pageCountMessage : null, content : body})
-    console.log(body) // Print the google web page.
-  } else {
-      res.render('index.html', { pageCountMessage : null, })
-  }
-})
+  http.get('http://google.com',(res) => {
+  console.log('Got response: ${res.statusCode}');
+  }).on('error', (e) => {
+  console.log(`Got error: ${e.message}`);
+});
+
+       res.render('index.html', { pageCountMessage : null, })
+  
+
 });
 
 app.get('/pagecount', function (req, res) {
